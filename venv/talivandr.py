@@ -115,8 +115,8 @@ class MyFrame(wx.Frame):
 
             with connection.cursor() as cursor:
                     # Read a single record
-                    sql = "SELECT ID, Term, Translation, Comment FROM dict WHERE Term LIKE %s"
-                    cursor.execute(sql, ('%'+self.search_box.GetValue()+'%'))
+                    sql = "SELECT ID, Term, Translation, Comment FROM dict WHERE Term LIKE %s OR Translation LIKE %s"
+                    cursor.execute(sql, ('%'+self.search_box.GetValue()+'%', '%'+self.search_box.GetValue()+'%'))
                     result = cursor.fetchall() #fetchmany(10) or fetchall
 # очищщаем талбицу
                     self.list_box.DeleteAllItems()
