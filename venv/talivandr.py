@@ -1,17 +1,33 @@
+import json
+from difflib import get_close_matches
+
+data = json.load(open("dictionary.json"))
+
+def retrive_definition(word):
+    word = word.lower()
+
+    if word in data:
+        return data[word]
+    elif word.title() in data:
+        return data[word.title()]
+    elif word.upper() in data:
+        return data[word.upper()]
+    elif len(get_close_matches(word, data.keys())) > 0:
+        self.comment_box.AppendText("We found %s instead: " % get_close_matches(word, data.keys())[0]) #HOW TO OUTPU???
+        return data[get_close_matches(word, data.keys())[0]]
+
 import wx
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
 #создаем не разворачивающееся окно
-        wx.Frame.__init__(self, None, -1, 'pyTalivandr Beta', size = (800, 430), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        wx.Frame.__init__(self, None, -1, 'pyTalivandr 2.0 Beta', size = (800, 430), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 #сквозная вспомогательная переменная-счетчик
         self.index = 0
 #        self.state = ''
 #элементы интерфейса
         self.panel = wx.Panel(self)
         self.search_box = wx.TextCtrl(self.panel, pos = (20, 10), size = (420, 20), style=wx.TE_PROCESS_ENTER)
-        self.search_box.SetValue('Enter phrase here and click "search" button ->')
-        self.search_box2 = wx.TextCtrl(self.panel, pos = (505, 10), size = (200, 20), style=wx.TE_PROCESS_ENTER)
-        self.search_box2.SetValue('Enter abbrev here and hit "Abbrev"->')
+        self.search_box.SetValue('err')
 #        self.search_box.Bind(wx.EVT_TEXT, self.TextChanged, self.search_box)
 #        self.search_box.Bind(wx.EVT_TEXT_ENTER, self.TextChanged, self.search_box) #style=wx.TE_PROCESS_ENTER
 #таблица
@@ -25,52 +41,20 @@ class MyFrame(wx.Frame):
 #        self.text_box = wx.TextCtrl(self.panel, pos = (20, 350), size = (300, 200), style=wx.TE_MULTILINE|wx.TE_READONLY)
         self.comment_box = wx.TextCtrl(self.panel, pos=(460, 40), size=(300, 300), style=wx.TE_MULTILINE | wx.TE_READONLY)
 #кнопки
-        self.search_button = wx.Button(self.panel, label = 'Search', style=wx.ALIGN_CENTER, pos=(460,10),size = (40, 20))
+        self.search_button = wx.Button(self.panel, label = 'SEARCH', style=wx.ALIGN_CENTER, pos=(460,10),size = (60, 20))
         self.Bind(wx.EVT_BUTTON, self.search_button_click, self.search_button)
-        self.abbrev_button = wx.Button(self.panel, label='Abbrev', style=wx.ALIGN_CENTER, pos=(710, 10), size=(50, 20))
-        self.Bind(wx.EVT_BUTTON, self.abbrev_button_click, self.abbrev_button)
 
-#############КРАСИВОЕ МЕНЮ (необозательно)#######################
-        self.makeMenuBar()
+        closeBtn = wx.Button(self.panel, label="EXIT", style=wx.ALIGN_CENTER, pos=(710,10),size = (40, 20))
+        closeBtn.Bind(wx.EVT_BUTTON, self.onClose)
 
-        # and a status bar
         self.CreateStatusBar()
         self.SetStatusText("Welcome to Talivandr!")
 
-    def makeMenuBar(self):
+        self.rb1 = wx.RadioButton(self.panel, 11, label='Value A', pos=(530, 10), style=wx.RB_GROUP)
+        self.rb2 = wx.RadioButton(self.panel, 22, label='Value B', pos=(610, 10))
 
-        fileMenu = wx.Menu()
-
-        helloItem = fileMenu.Append(-1, "&Search\tCtrl-H",
-                                    "Help string shown in status bar for this menu item")
-        fileMenu.AppendSeparator()
-
-        exitItem = fileMenu.Append(wx.ID_EXIT)
-
-        helpMenu = wx.Menu()
-        aboutItem = helpMenu.Append(wx.ID_ABOUT)
-
-        menuBar = wx.MenuBar()
-        menuBar.Append(fileMenu, "&File")
-        menuBar.Append(helpMenu, "&Help")
-
-        self.SetMenuBar(menuBar)
-
-        self.Bind(wx.EVT_MENU, self.OnExit, exitItem)
-        self.Bind(wx.EVT_MENU, self.OnAbout, aboutItem)
-        self.Bind(wx.EVT_MENU, self.OnHello, helloItem)
-
-    def OnExit(self, event):
-        self.Close(True)
-
-    def OnHello(self, event):
-        wx.MessageBox("No action yet on this click. Sorry")
-
-    def OnAbout(self, event):
-         wx.MessageBox("Talivandr Dictionary 5966 v2.0 ©\n \n August 2019 by eugeny.varseev@gmail.com ",
-                      "About",
-                      wx.OK | wx.ICON_INFORMATION)
-#############SOME UNNESSESARY BULSHIT ENDS HERE###################
+    def onClose(self, event):
+            self.Close()
 
     def list_box_dclicked(self, event):
 # отображаем комментарий по выделению строки в таблице
@@ -90,89 +74,21 @@ class MyFrame(wx.Frame):
 
     def search_button_click(self, event):
 # основной поиск по кнопке
-        import configparser, pymysql.cursors
+        self.comment_box.SetValue('')
 
-        self.index = 0
-        self.search_box2.SetValue('')
-# настраиваем забор имя пользователя и пароля из отдельного файла
-        config = configparser.ConfigParser()
-        config.read('config.ini', encoding='utf-8-sig')
-# настройка подключения
-        connection = pymysql.connect(host='sql7.freesqldatabase.com',
-                                     user=config.get('mysql', 'user'),
-                                     password=config.get('mysql', 'password'),
-                                     db=config.get('mysql', 'db'),
-                                     charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+        word_user = self.search_box.GetValue()
 
-        try:
-#            with connection.cursor() as cursor:
-#                    sql = "SELECT Term, Translation FROM dict LIMIT 1"
-#                    cursor.execute(sql)
-# подключение
-            connection.commit()
+        output = retrive_definition(word_user)
 
-            self.SetStatusText("Connection succesfull")
+        if type(output) == list:
+            for item in output:
+                self.comment_box.AppendText("- " + f"{item}\n")
+#                self.search_box.SetValue("- " + item)
+        else:
+            self.comment_box.SetValue('')
+            self.comment_box.AppendText("- " + f"{output}\n")
+#            self.search_box.SetValue("- " + output)
 
-            with connection.cursor() as cursor:
-                    # Read a single record
-                    sql = "SELECT ID, Term, Translation, Comment FROM dict WHERE Term LIKE %s OR Translation LIKE %s"
-                    cursor.execute(sql, ('%'+self.search_box.GetValue()+'%', '%'+self.search_box.GetValue()+'%'))
-                    result = cursor.fetchall() #fetchmany(10) or fetchall
-# очищщаем талбицу
-                    self.list_box.DeleteAllItems()
-# заполняем таблицу результатом
-                    for row in result:
-                        self.list_box.Append((row["ID"], row["Term"], row["Translation"], row["Comment"]))
-                        self.index += 1
-
-        finally:
-                connection.close()
-# служебная информация для отладки
-#        self.text_box.AppendText(f"{'Success, number of results '+ str(self.index)}\n")
-
-    def abbrev_button_click(self, event):
-#  поиск в комментариях аналогично основному
-        import configparser, pymysql.cursors
-
-        self.index = 0
-
-        self.search_box.SetValue('')
-
-        config = configparser.ConfigParser()
-        config.read('config.ini', encoding='utf-8-sig')
-
-        connection = pymysql.connect(host='sql7.freesqldatabase.com',
-                                     user=config.get('mysql', 'user'),
-                                     password=config.get('mysql', 'password'),
-                                     db=config.get('mysql', 'db'),
-                                     charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-
-        try:
-            with connection.cursor() as cursor:
-                    sql = "SELECT Term, Translation FROM dict LIMIT 1"
-                    cursor.execute(sql)
-
-            connection.commit()
-
-            self.SetStatusText("Connection succesfull")
-
-            with connection.cursor() as cursor:
-                    # Read a single record
-                    sql = "SELECT ID, Term, Translation, Comment FROM dict WHERE" \
-                          " Comment LIKE %s"
-                    cursor.execute(sql, ('%'+self.search_box2.GetValue()+'%',))
-                    result = cursor.fetchall() #fetchmany(10) or fetchall
-
-                    self.list_box.DeleteAllItems()
-
-                    for row in result:
-                        self.list_box.Append((row["ID"], row["Term"], row["Translation"], row["Comment"]))
-                        self.index += 1
-
-        finally:
-                connection.close()
-# служебная информация для отладки
-#        self.text_box.AppendText(f"{'Success, number of results '+ str(self.index)}\n")
 
 app = wx.App(False)
 frame = MyFrame(None, "")
