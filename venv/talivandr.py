@@ -2,14 +2,8 @@ import json
 import requests
 from difflib import get_close_matches
 #getting data online
-r = requests.get('http://book40.hostenko.com/tun/dictionary.json')
+r = requests.get('http://book40.hostenko.com/tun/csvjson.json')
 data = r.json()
-# data = json.load(open("dictionary.json")) #for local
-
-# def function(json_object, name):
-#    for dict in json_object:
-#        if dict == name:
-#            return dict['Translation']
 
 def retrive_definition(word):
 
@@ -52,19 +46,10 @@ class MyFrame(wx.Frame):
     def search_button_click(self, event):
 # основной поиск по кнопке
         self.comment_box.SetValue('')
-        word_user = self.search_box.GetValue()
-        output = retrive_definition(word_user)
-#        output = function(data, word_user)
-
-        if type(output) == list:
-            for item in output:
-                self.comment_box.AppendText("- " + f"{item}\n")
-#                self.search_box.SetValue("- " + item)
-        else:
-            self.comment_box.SetValue('')
-            self.comment_box.AppendText("- " + f"{output}\n")
-#            self.search_box.SetValue("- " + output)
-
+        for x in range(4360):
+            if data['dict'][x]['Term'] == self.search_box.GetValue(): #'nuclear facility':
+#                print(data['dict'][x]['Translation'])
+                self.comment_box.AppendText("- " + f"{data['dict'][x]['Translation']}\n")
 
 app = wx.App(False)
 frame = MyFrame(None, "")
