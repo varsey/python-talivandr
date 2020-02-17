@@ -1,24 +1,3 @@
-import json
-import requests
-from difflib import get_close_matches
-#getting data online
-r = requests.get('http://book40.hostenko.com/tun/csvjson.json')
-data = r.json()
-
-def retrive_definition(word):
-
-    word = word.lower()
-
-    if word in data:
-        return data[word]
-    elif word.title() in data:
-        return data[word.title()]
-    elif word.upper() in data:
-        return data[word.upper()]
-    elif len(get_close_matches(word, data.keys())) > 0:
-        print("We found %s instead: " % get_close_matches(word, data.keys())[0]) #HOW TO OUTPU???
-        return data[get_close_matches(word, data.keys())[0]]
-
 import wx
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
@@ -46,10 +25,24 @@ class MyFrame(wx.Frame):
     def search_button_click(self, event):
 # основной поиск по кнопке
         self.comment_box.SetValue('')
-        for x in range(4360):
-            if data['dict'][x]['Term'] == self.search_box.GetValue(): #'nuclear facility':
-#                print(data['dict'][x]['Translation'])
-                self.comment_box.AppendText("- " + f"{data['dict'][x]['Translation']}\n")
+#        print(len(data['dict'][0]['Term']))
+        search = self.search_box.GetValue()
+        if (len(search))>=3:
+            for x in range(4360):
+                if search in data['dict'][x]['Term']:
+    #                print(data['dict'][x]['Translation'])
+                    self.comment_box.AppendText(f"{data['dict'][x]['Term']}"+" - " + f"{data['dict'][x]['Translation']}\n")
+#                    self.comment_box.AppendText("- " + f"{data['dict'][x]['Comment']}\n")
+                    self.comment_box.AppendText("------------------------------------------"+"\n")
+        else:
+            self.comment_box.AppendText("less than 3 letters in search"+"\n")
+
+import json
+import requests
+from difflib import get_close_matches
+#getting data online
+r = requests.get('http://book40.hostenko.com/tun/csvjson.json')
+data = r.json()
 
 app = wx.App(False)
 frame = MyFrame(None, "")
