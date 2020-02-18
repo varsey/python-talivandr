@@ -1,8 +1,13 @@
+import json
+import requests
+#from difflib import get_close_matches
 import wx
+import wx.grid as gridlib
+
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
 #создаем не разворачивающееся окно
-        wx.Frame.__init__(self, None, -1, 'pyTalivandr 2.0 Beta', size = (620, 430), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        wx.Frame.__init__(self, None, -1, 'pyTalivandr 2.1 Beta', size = (620, 430), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
 #элементы интерфейса
         self.panel = wx.Panel(self)
@@ -19,29 +24,27 @@ class MyFrame(wx.Frame):
         self.CreateStatusBar()
         self.SetStatusText("Welcome to Talivandr!")
 
+#        myGrid = gridlib.Grid(self.panel)
+#        myGrid.CreateGrid(12, 8)
+
     def onClose(self, event):
             self.Close()
 
     def search_button_click(self, event):
-# основной поиск по кнопке
         self.comment_box.SetValue('')
 #        print(len(data['dict'][0]['Term']))
         search = self.search_box.GetValue()
         if (len(search))>=3:
             for x in range(4360):
                 if search in data['dict'][x]['Term']:
-    #                print(data['dict'][x]['Translation'])
-                    self.comment_box.AppendText(f"{data['dict'][x]['Term']}"+" - " + f"{data['dict'][x]['Translation']}\n")
-#                    self.comment_box.AppendText("- " + f"{data['dict'][x]['Comment']}\n")
+                    self.comment_box.AppendText("\n" + f"{data['dict'][x]['Term']}"+" - " + f"{data['dict'][x]['Translation']}\n"+"\n")
+                    self.comment_box.AppendText("- " + f"{data['dict'][x]['Comment']}\n"+"\n")
                     self.comment_box.AppendText("------------------------------------------"+"\n")
         else:
-            self.comment_box.AppendText("less than 3 letters in search"+"\n")
+            self.comment_box.AppendText("Please enter more than 3 letters"+"\n")
 
-import json
-import requests
-from difflib import get_close_matches
 #getting data online
-r = requests.get('http://book40.hostenko.com/tun/csvjson.json')
+r = requests.get('http://talivandr.site/db/talivandr_db')
 data = r.json()
 
 app = wx.App(False)
