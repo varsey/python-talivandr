@@ -32,20 +32,20 @@ class MyFrame(wx.Frame):
 
     def search_button_click(self, event):
         self.comment_box.SetValue('')
-#        print(len(data['dict'][0]['Term']))
         search = self.search_box.GetValue()
         if (len(search))>=3:
-            for x in range(4360):
+            for x in range(len(data['dict'])):
                 if search in data['dict'][x]['Term']:
                     self.comment_box.AppendText("\n" + f"{data['dict'][x]['Term']}"+" - " + f"{data['dict'][x]['Translation']}\n"+"\n")
-                    self.comment_box.AppendText("- " + f"{data['dict'][x]['Comment']}\n"+"\n")
-                    self.comment_box.AppendText("------------------------------------------"+"\n")
+                    self.comment_box.AppendText("- " + data['dict'][x]['Comment'].split("\\n", 1)[0] + "\n") #+ data['dict'][x]['Comment'].split("\\n", 1)[1] +"\n")
+                    self.comment_box.AppendText("-------------------------------" +"\n")
         else:
             self.comment_box.AppendText("Please enter more than 3 letters"+"\n")
 
 #getting data online
-r = requests.get('http://talivandr.site/db/talivandr_db')
+r = requests.get('http://talivandr.site/db/talivandr_db.json')
 data = r.json()
+json.dumps(data)
 
 app = wx.App(False)
 frame = MyFrame(None, "")
