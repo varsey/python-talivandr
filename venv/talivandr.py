@@ -30,15 +30,25 @@ class MyFrame(wx.Frame):
     def onClose(self, event):
             self.Close()
 
+    def str_split(str):
+        number = 0
+        while str.split("\\n", 1)[number]:
+            output_str = output_str + str.split("\\n", 1)[number]
+            number = number + 1
+        return output_str
+
     def search_button_click(self, event):
         self.comment_box.SetValue('')
         search = self.search_box.GetValue()
         if (len(search))>=3:
             for x in range(len(data['dict'])):
                 if search in data['dict'][x]['Term']:
-                    self.comment_box.AppendText("\n" + f"{data['dict'][x]['Term']}"+" - " + f"{data['dict'][x]['Translation']}\n"+"\n")
-                    self.comment_box.AppendText("- " + data['dict'][x]['Comment'].split("\\n", 1)[0] + "\n") #+ data['dict'][x]['Comment'].split("\\n", 1)[1] +"\n")
-                    self.comment_box.AppendText("-------------------------------" +"\n")
+                    output_str = ''
+                    for y in range(len(data['dict'][x]['Comment'].split("\\n", 1))):
+                        output_str = output_str + data['dict'][x]['Comment'].split("\\n", 1)[y] + "\n" + "\n"
+                        self.comment_box.AppendText("\n" + f"{data['dict'][x]['Term']}"+" - " + f"{data['dict'][x]['Translation']}\n"+"\n")
+                        self.comment_box.AppendText(output_str + "\n")
+                        self.comment_box.AppendText("-------------------------------" +"\n")
         else:
             self.comment_box.AppendText("Please enter more than 3 letters"+"\n")
 
