@@ -30,37 +30,31 @@ class MyFrame(wx.Frame):
     def onClose(self, event):
             self.Close()
 
-    def str_split(str):
-        number = 0
-        while str.split("\\n", -1)[number]:
-            output_str = output_str + str.split("\\n", -1)[number]
-            number = number + 1
-            if str.find("Источник") >= 0:
-                print("yes")
-                output_str = output_str.split("Источник", -1)[number-1] + "\n" + "Источник" + str.split("Источник", -1)[number]
-        return output_str
+    def searching(self, str):
+
+        output_str = ''
+
+        if (len(str)) >= 3:
+            for x in range(len(data['dict'])):
+                if str in data['dict'][x]['Term']:
+                    output_str = ''
+                    self.comment_box.AppendText(data['dict'][x]['Term'] + ' - ' + data['dict'][x]['Translation']+'\n\n')
+                    for y in range(len(data['dict'][x]['Comment'].split("\\n", -1))):
+                        output_str = output_str + data['dict'][x]['Comment'].split("\\n", -1)[y] + "\n"
+
+                    if data['dict'][x]['Comment'].find("Источник") >= 0:
+                        output_str = output_str.split("Источник", -1)[y - 1] + "\n" + "Источник" + \
+                                     data['dict'][x]['Comment'].split("Источник", -1)[y]
+                    self.comment_box.AppendText(
+                        output_str + '\n' + '+++++++++++++++++++++++++++++++++++++++++++++++++++' + '\n')
+
+        return
 
     def search_button_click(self, event):
         self.comment_box.SetValue('')
         search = self.search_box.GetValue()
-        if (len(search))>=3:
-            for x in range(len(data['dict'])):
-                if search in data['dict'][x]['Term']:
-                    output_str = ''
-                    self.comment_box.AppendText(
-                        "\n" + f"{data['dict'][x]['Term']}" + " - " + f"{data['dict'][x]['Translation']}\n" + "\n")
+        self.searching(search)
 
-                    for y in range(len(data['dict'][x]['Comment'].split("\\n", -1))):
-                        output_str = output_str + data['dict'][x]['Comment'].split("\\n", -1)[y] + "\n" + "\n"
-
-                    if data['dict'][x]['Comment'].find("Источник") >= 0:
-                        output_str = output_str.split("Источник", -1)[y - 1] + "\n\n" + "Источник" + \
-                                data['dict'][x]['Comment'].split("Источник", -1)[y] + "\n"
-
-                        self.comment_box.AppendText(output_str + "\n")
-                        self.comment_box.AppendText("-------------------------------" +"\n")
-        else:
-            self.comment_box.AppendText("Please enter more than 3 letters"+"\n")
 
 #getting data online
 r = requests.get('http://talivandr.site/db/talivandr_db.json')
