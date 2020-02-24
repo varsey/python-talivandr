@@ -1,27 +1,19 @@
-import json
-import requests
+import wx
 
-r = requests.get('http://talivandr.site/db/talivandr_db.json')
-data = r.json()
-json.dumps(data)
+class MyFrame(wx.Frame):
+    def __init__(self, parent, title):
+#создаем не разворачивающееся окно
+        wx.Frame.__init__(self, None, -1, 'pyTalivandr 2.1 Beta', size = (620, 430), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
-my_string="ENG: A facility (including associated buildings and equipment) in which nuclear material is produced, processed, used, handled, stored or disposed of.\\nRUS: ЯЭУ - ядерная энергетическая установка"
+        self.Text_Enter = wx.TextCtrl(self , 2 ,style = wx.TE_PROCESS_ENTER, size =(125,150), pos = (170,0))
+        self.Text_Enter.SetForegroundColour(wx.RED)
+        self.Bind(wx.EVT_TEXT_ENTER, self.Txt_Ent, id = 2)
 
-output_str = ''
-search = input()
-if (len(search)) >= 3:
-    for x in range(len(data['dict'])):
-        if search in data['dict'][x]['Term']:
+    def Txt_Ent(self,event):
+           msg1 = (str(self.Text_Enter.GetValue()))
+           wx.MessageBox(msg1)
 
-            print(data['dict'][x]['Term'] + ' - ' + data['dict'][x]['Translation'])
-            for y in range(len(data['dict'][x]['Comment'].split("\\n", -1))):
-                output_str = output_str + data['dict'][x]['Comment'].split("\\n", -1)[y] + "\n"
-            #    output_str = output_str + "Источник - " + data['dict'][x]['Comment'].split("Источник", 1)[y] + "\n"
-
-            if data['dict'][x]['Comment'].find("Источник") >= 0:
-                    # print("YES")
-                    output_str = output_str.split("Источник", -1)[y-1] + "\n"+ "Источник"  + data['dict'][x]['Comment'].split("Источник", -1)[y]
-#            else:
-#                    print("NO")
-
-print(output_str)
+app = wx.App(False)
+frame = MyFrame(None, "")
+frame.Show()
+app.MainLoop()
