@@ -50,8 +50,10 @@ class MyFrame(wx.Frame):
                         output_str = output_str.split("Источник", -1)[y - 1] + "\n" + "Источник" + \
                                      data['dict'][x]['Comment'].split("Источник", -1)[y]
                     self.comment_box.AppendText(
-                        output_str + '\n' + '+++++++++++++++++++++++++++++++++++++++++++++++++++' + '\n')
-        if notfound == True:
+                        output_str + '\n' + '===========================================' + '\n')
+        else:
+            self.comment_box.AppendText('Search string is too short')
+        if notfound == True and (len(str)) >= 3:
             self.comment_box.AppendText('Nothing found')
         return
 
@@ -63,6 +65,7 @@ class MyFrame(wx.Frame):
 #getting data online
 try:
     r = requests.get('http://talivandr.site/db/talivandr_db.json')
+    open('data', 'wb').write(r.content)
     r.raise_for_status()
 except requests.exceptions.HTTPError as err:
     error_code = err
