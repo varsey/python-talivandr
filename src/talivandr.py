@@ -19,6 +19,12 @@ class MyFrame(wx.Frame):
         self.panel = wx.Panel(self)
         self.search_box = wx.TextCtrl(self.panel, 2, style=wx.TE_PROCESS_ENTER, pos=(20, 10), size=(450, 20))
         self.search_box.SetValue('')
+
+        self.list_box = wx.ListCtrl(self.panel, pos=(0, 130), size=(450, 250), style=wx.LC_REPORT | wx.SUNKEN_BORDER)
+        self.list_box.InsertColumn(0, "Term")
+        self.list_box.InsertColumn(1, "Translation")
+        self.list_box.InsertColumn(3, "Comment")
+
         self.comment_box = wx.TextCtrl(self.panel, pos=(20, 40), size=(550, 300),
                                        style=wx.TE_MULTILINE | wx.TE_READONLY)
         # кнопки
@@ -50,7 +56,7 @@ class MyFrame(wx.Frame):
                 if str in data['dict'][x]['Term'] or str in data['dict'][x]['Translation']:
                     notfound = False
                     output_str = ''
-                    self.comment_box.AppendText(
+                    self.list_box.AppendText(
                         data['dict'][x]['Term'] + ' - ' + data['dict'][x]['Translation'] + '\n\n')
                     for y in range(len(data['dict'][x]['Comment'].split("\\n", -1))):
                         output_str = output_str + data['dict'][x]['Comment'].split("\\n", -1)[y] + "\n"
@@ -67,13 +73,12 @@ class MyFrame(wx.Frame):
         return
 
     def search_button_click(self, event):
+        self.comment_box.Hide()
         self.comment_box.SetValue('')
         search = self.search_box.GetValue()
         self.searching(search)
 
-
-# getting data online
-
+#path to file
 datafile = tempfile.gettempdir() + '\\' + 'talivata'
 temp = tempfile.gettempdir() + '\\' + 'talivandrtemp'
 
@@ -94,6 +99,7 @@ try:
         os.rename(temp, datafile)
         print('Temp renamed')
 
+
 except:
     print("Connection failed")
     # opening existing file if no connection
@@ -101,7 +107,6 @@ except:
         with open(datafile, encoding="utf8") as f:
             data = json.load(f)
             print("File exist")
-# son.dumps(data)
 
 app = wx.App(False)
 frame = MyFrame(None, "")
