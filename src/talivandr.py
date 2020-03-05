@@ -1,13 +1,11 @@
 import json
 import tempfile
 import requests
-# from difflib import get_close_matches
 import wx
-# from .GUI import design
-
 import os.path
 from os import path
-
+# from difflib import get_close_matches
+# from .GUI import design
 
 class MyFrame(wx.Frame):
     def __init__(self, parent, title):
@@ -20,13 +18,10 @@ class MyFrame(wx.Frame):
         self.search_box = wx.TextCtrl(self.panel, 2, style=wx.TE_PROCESS_ENTER, pos=(20, 10), size=(450, 20))
         self.search_box.SetValue('')
 
-        self.list_box = wx.ListCtrl(self.panel, pos=(0, 130), size=(450, 250), style=wx.LC_REPORT | wx.SUNKEN_BORDER)
-        self.list_box.InsertColumn(0, "Term")
-        self.list_box.InsertColumn(1, "Translation")
-        self.list_box.InsertColumn(3, "Comment")
-
         self.comment_box = wx.TextCtrl(self.panel, pos=(20, 40), size=(550, 300),
                                        style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.comment_box.Hide()
+
         # кнопки
         self.search_button = wx.Button(self.panel, label='Search', style=wx.ALIGN_LEFT, pos=(480, 10), size=(50, 20))
         self.Bind(wx.EVT_BUTTON, self.search_button_click, self.search_button)
@@ -39,8 +34,7 @@ class MyFrame(wx.Frame):
 
         self.Bind(wx.EVT_TEXT_ENTER, self.Txt_Ent, id=2)
 
-    #        myGrid = gridlib.Grid(self.panel)
-    #        myGrid.CreateGrid(12, 8)
+        self.Centre()
 
     def onClose(self, event):
         self.Close()
@@ -73,7 +67,6 @@ class MyFrame(wx.Frame):
         return
 
     def search_button_click(self, event):
-        self.comment_box.Hide()
         self.comment_box.SetValue('')
         search = self.search_box.GetValue()
         self.searching(search)
@@ -98,7 +91,6 @@ try:
     if path.exists(datafile) == False:
         os.rename(temp, datafile)
         print('Temp renamed')
-
 
 except:
     print("Connection failed")
