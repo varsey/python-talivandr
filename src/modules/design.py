@@ -1,9 +1,6 @@
-import json
-import tempfile
-import requests
 import wx
-import os.path
-from os import path
+import modules.config
+
 
 class Mywin(wx.Frame):
 
@@ -46,6 +43,11 @@ class Mywin(wx.Frame):
 
 #========
 
+    def search_button_click(self, event):
+        self.text.SetValue('')
+        search = self.search_box.GetValue()
+        self.searching(search)
+
     def searching(self, str):
         global output_str
 
@@ -55,14 +57,14 @@ class Mywin(wx.Frame):
         self.lst.Clear()
 
         if (len(str)) >= 3:
-            for x in range(len(data['dict'])):
+            for x in range(len(modules.config.data)):
 #                if len(output_str) > 0:
 #                    output_str.clear()
-                if str in data['dict'][x]['Term'] or str in data['dict'][x]['Translation']:
+                if str in modules.config.data[x]['Term'] or str in modules.config.data[x]['Translation']:
                     notfound = False
                     self.lst.Append(
-                        data['dict'][x]['Term'] + ' - ' + data['dict'][x]['Translation'])
-                    output_str.append(data['dict'][x]['Comment'])
+                        modules.config.data[x]['Term'] + ' - ' + modules.config.data[x]['Translation'])
+                    output_str.append(modules.config.data[x]['Comment'])
 
         else:
             self.text.AppendText('Search string is too short')
@@ -71,41 +73,3 @@ class Mywin(wx.Frame):
             self.text.AppendText('Nothing found')
 
         return output_str
-
-    def search_button_click(self, event):
-        self.text.SetValue('')
-        search = self.search_box.GetValue()
-        self.searching(search)
-
-#path to file
-datafile = tempfile.gettempdir() + '\\' + 'talivata'
-temp = tempfile.gettempdir() + '\\' + 'talivandrtemp'
-
-try:
-    # downloading a temp
-    r = requests.get('http://talivandr.site/db/talivandr_db.json')
-    open(temp, 'wb').write(r.content)
-    r.raise_for_status()
-    data = r.json()
-    print("Temp data written")
-
-    # checking for changes and updating if yes
-    if path.exists(datafile) and (os.stat(datafile).st_size != os.stat(temp).st_size):
-        os.rename(temp, datafile)
-        print('Temp is diffrent, data updated')
-
-    if path.exists(datafile) == False:
-        os.rename(temp, datafile)
-        print('Temp renamed')
-
-except:
-    print("Connection failed")
-    # opening existing file if no connection
-    if path.exists(datafile):
-        with open(datafile, encoding="utf8") as f:
-            data = json.load(f)
-            print("File exist")
-
-ex = wx.App()
-Mywin(None, 'pyTalivandr 2.3')
-ex.MainLoop()
