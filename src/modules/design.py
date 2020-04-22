@@ -1,4 +1,5 @@
 import wx
+import wx.html
 import modules.config
 
 
@@ -12,13 +13,18 @@ class Mywin(wx.Frame):
 
         self.search_box = wx.TextCtrl(panel, 2, style=wx.TE_PROCESS_ENTER)
 
-        self.text = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+#        self.text = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
 
         self.lst = wx.ListBox(panel, size=(100, -1), style=wx.LB_SINGLE)
 
+        self.label_header = wx.html.HtmlWindow(panel, style=wx.TE_READONLY |
+                                                           wx.TE_MULTILINE | wx.TE_NO_VSCROLL | wx.BORDER_NONE)
+
         box.Add(self.search_box , 0, wx.EXPAND)
         box.Add(self.lst, 1, wx.EXPAND)
-        box.Add(self.text, 2, wx.EXPAND)
+#        box.Add(self.text, 2, wx.EXPAND)
+        box.Add(self.label_header, 2, wx.EXPAND)
+
 
         panel.SetSizer(box)
         panel.Fit()
@@ -34,17 +40,19 @@ class Mywin(wx.Frame):
         self.search_button_click(event)
 
     def onListBox(self, event):
-        self.text.Clear()
+#        self.text.Clear()
+        self.label_header.ClearBackground()
 
         index = event.GetEventObject().GetSelection()
         search_result = self.searching(self.search_box.GetValue())
 
-        self.text.AppendText(search_result[index])
+        self.label_header.SetPage(search_result[index])
+#        self.text.AppendText(search_result[index])
 
 #========
 
     def search_button_click(self, event):
-        self.text.SetValue('')
+#        self.text.SetValue('')
         search = self.search_box.GetValue()
         self.searching(search)
 
@@ -67,9 +75,11 @@ class Mywin(wx.Frame):
                     output_str.append(modules.config.data[x]['Comment'])
 
         else:
-            self.text.AppendText('Search string is too short')
+#            self.text.AppendText('Search string is too short')
+            self.label_header.SetPage('Search string is too short')
 
         if notfound == True and (len(str)) >= 3:
-            self.text.AppendText('Nothing found')
+#            self.text.AppendText('Nothing found')
+            self.label_header.SetPage('Nothing found. Please try again')
 
         return output_str
