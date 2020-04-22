@@ -6,34 +6,27 @@ import modules.config
 class Mywin(wx.Frame):
 
     def __init__(self, parent, title):
-        super(Mywin, self).__init__(parent, title=title, size=(800, 600), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(Mywin, self).__init__(parent, title=title, size=(800, 450),
+                                    style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
-        panel = wx.Panel(self)
-        box = wx.BoxSizer(wx.VERTICAL)
-
-        self.search_box = wx.TextCtrl(panel, 2, style=wx.TE_PROCESS_ENTER)
-
-#        self.text = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
-
-        self.lst = wx.ListBox(panel, size=(100, -1), style=wx.LB_SINGLE)
-
-        self.label_header = wx.html.HtmlWindow(panel, style=wx.TE_READONLY |
+        panel_main = wx.Panel(self)
+        self.search_box = wx.TextCtrl(panel_main, 2, style=wx.TE_PROCESS_ENTER)
+        self.lst1 = wx.html.SimpleHtmlListBox (panel_main, style=wx.LB_SINGLE)
+        self.lst2 = wx.html.SimpleHtmlListBox (panel_main, -1, style=wx.LB_SINGLE)
+        self.label_header = wx.html.HtmlWindow(panel_main, style=wx.TE_READONLY |
                                                            wx.TE_MULTILINE | wx.TE_NO_VSCROLL | wx.BORDER_NONE)
 
-        box.Add(self.search_box , 0, wx.EXPAND)
-        box.Add(self.lst, 1, wx.EXPAND)
-#        box.Add(self.text, 2, wx.EXPAND)
+        box = wx.BoxSizer(wx.VERTICAL)
+
+        box.Add(self.search_box, 0, wx.EXPAND)
+        box.Add(self.lst1, 1, wx.EXPAND)
         box.Add(self.label_header, 2, wx.EXPAND)
 
-
-        panel.SetSizer(box)
-        panel.Fit()
+        panel_main.SetSizer(box)
 
         self.Centre()
-        self.Bind(wx.EVT_LISTBOX, self.onListBox, self.lst)
-
+        self.Bind(wx.EVT_LISTBOX, self.onListBox, self.lst1)
         self.Bind(wx.EVT_TEXT_ENTER, self.Txt_Ent, id=2)
-
         self.Show(True)
 
     def Txt_Ent(self, event):
@@ -62,7 +55,7 @@ class Mywin(wx.Frame):
         output_str = list()
         notfound = True
         str = str.lower()
-        self.lst.Clear()
+        self.lst1.Clear()
 
         if (len(str)) >= 3:
             for x in range(len(modules.config.data)):
@@ -70,9 +63,11 @@ class Mywin(wx.Frame):
 #                    output_str.clear()
                 if str in modules.config.data[x]['Term'] or str in modules.config.data[x]['Translation']:
                     notfound = False
-                    self.lst.Append(
+                    self.lst1.Append(
                         modules.config.data[x]['Term'] + ' - ' + modules.config.data[x]['Translation'])
-                    output_str.append(modules.config.data[x]['Comment'])
+                    output_str.append('<h5>' +modules.config.data[x]['Term'] + ' - '
+                                      + modules.config.data[x]['Translation'] + '</h5><br /><br />'
+                                      + modules.config.data[x]['Comment'])
 
         else:
 #            self.text.AppendText('Search string is too short')
