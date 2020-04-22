@@ -8,30 +8,6 @@ import modules.design
 import modules.config
 
 
-def searching(self, str):
-    notfound = True
-    str = str.lower()
-    if (len(str)) >= 3:
-        for x in range(len(data['dict'])):
-            if str in data['dict'][x]['Term'] or str in data['dict'][x]['Translation']:
-                notfound = False
-                output_str = ''
-                self.list_box.AppendText(
-                    data['dict'][x]['Term'] + ' - ' + data['dict'][x]['Translation'] + '\n\n')
-                for y in range(len(data['dict'][x]['Comment'].split("\\n", -1))):
-                    output_str = output_str + data['dict'][x]['Comment'].split("\\n", -1)[y] + "\n"
-
-                if data['dict'][x]['Comment'].find("Источник") >= 0:
-                    output_str = output_str.split("Источник", -1)[y - 1] + "\n" + "Источник" + \
-                                 data['dict'][x]['Comment'].split("Источник", -1)[y]
-                self.comment_box.AppendText(
-                    output_str + '\n' + '===========================================' + '\n')
-    else:
-        self.comment_box.AppendText('Search string is too short')
-    if notfound == True and (len(str)) >= 3:
-        self.comment_box.AppendText('Nothing found')
-    return
-
 #path to file
 datafile = tempfile.gettempdir() + '\\' + 'talivata'
 temp = tempfile.gettempdir() + '\\' + 'talivandrtemp'
@@ -65,5 +41,6 @@ except Exception as ex:
 
 app = modules.design.wx.App(False)
 frame = modules.design.Mywin(None, "pyTalivandr 2.4")
+modules.design.Mywin.SetStatusText(frame, str(len(modules.config.data)) + " entries in database")
 frame.Show()
 app.MainLoop()

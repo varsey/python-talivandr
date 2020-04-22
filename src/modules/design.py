@@ -27,7 +27,38 @@ class Mywin(wx.Frame):
         self.Centre()
         self.Bind(wx.EVT_LISTBOX, self.onListBox, self.lst1)
         self.Bind(wx.EVT_TEXT_ENTER, self.Txt_Ent, id=2)
+
+        self.makeMenuBar()
+        self.CreateStatusBar()
+        self.SetStatusText("Welcome to Talivandr!")
         self.Show(True)
+
+####MENU DESCRIPTION@@@@
+    def makeMenuBar(self):
+
+        fileMenu = wx.Menu()
+        fileMenu.AppendSeparator()
+        exitItem = fileMenu.Append(wx.ID_EXIT)
+        helpMenu = wx.Menu()
+        aboutItem = helpMenu.Append(wx.ID_ABOUT)
+
+        menuBar = wx.MenuBar()
+        menuBar.Append(fileMenu, "&File")
+        menuBar.Append(helpMenu, "&Help")
+
+        self.SetMenuBar(menuBar)
+
+        self.Bind(wx.EVT_MENU, self.OnExit, exitItem)
+        self.Bind(wx.EVT_MENU, self.OnAbout, aboutItem)
+
+    def OnExit(self, event):
+        self.Close(True)
+
+    def OnAbout(self, event):
+         wx.MessageBox("Talivandr 5966 © by eugeny.varseev@gmail.com ",
+                      "About",
+                      wx.OK | wx.ICON_INFORMATION)
+###MENU DESCRIPTIONS ENDS HERE###########
 
     def Txt_Ent(self, event):
         self.search_button_click(event)

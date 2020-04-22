@@ -1,6 +1,6 @@
-[X] Count number of elements in db
-[] Print in style
-[X] Next line after ENG and RUS
+[V] Count number of elements in db
+[V] Print in style
+[V] Next line after ENG and RUS
 [X] Search on enter
-[] Connection succesfull mesasage
-[X] Nothinh found message
+[x] Connection successful mesasage
+[V] Nothing found message
