@@ -9,6 +9,6 @@ Requirements
 - pip install pyinstaller (optional - for exe release)
     - pyinstaller --noconsole --onefile src\talivandr.py
     
---pip install py2app (optional - for Mac app release)
+- pip install py2app (optional - for Mac app release)
     - py2applet --make-setup src/talivandr.py
     - python setup.py py2app -A
