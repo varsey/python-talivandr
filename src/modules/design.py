@@ -11,6 +11,7 @@ class Mywin(wx.Frame):
 
         panel_main = wx.Panel(self)
         self.search_box = wx.TextCtrl(panel_main, 2, style=wx.TE_PROCESS_ENTER)
+        self.search_box.SetDefaultStyle(wx.TextAttr(wx.NullColour, wx.BLUE))
         self.lst1 = wx.html.SimpleHtmlListBox (panel_main, style=wx.LB_SINGLE)
         self.lst2 = wx.html.SimpleHtmlListBox (panel_main, -1, style=wx.LB_SINGLE)
         self.label_header = wx.html.HtmlWindow(panel_main, style=wx.TE_READONLY |
@@ -33,7 +34,7 @@ class Mywin(wx.Frame):
         self.SetStatusText("Welcome to Talivandr!")
         self.Show(True)
 
-####MENU DESCRIPTION@@@@
+####MENU DESCRIPTION
     def makeMenuBar(self):
 
         fileMenu = wx.Menu()
@@ -76,7 +77,7 @@ class Mywin(wx.Frame):
 #========
 
     def search_button_click(self, event):
-#        self.text.SetValue('')
+        self.search_box.SetValue('')
         search = self.search_box.GetValue()
         self.searching(search)
 

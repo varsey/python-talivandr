@@ -1,6 +1,9 @@
 [V] Count number of elements in db
 [V] Print in style
 [V] Next line after ENG and RUS
-[X] Search on enter
-[x] Connection successful mesasage
+[V] Search on enter
+[X] Connection successful message
 [V] Nothing found message
+[X] Add grid to display search results
+[X] Clean db from '\ etc
+[X] write binary files with random name
