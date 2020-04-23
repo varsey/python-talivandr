@@ -7,3 +7,4 @@
 [X] Add grid to display search results
 [X] Clean db from '\ etc
 [X] write binary files with random name
+[X] display results as as list: wx.ListCtr
